@@ -1,3 +1,36 @@
+## Activating a virtualenv
+ 
+Activating a virtualenv will put the virtualenv-specific python and pip executables into your shell’s PATH.
+
+### On macOS and Linux:
+
+*source env/bin/activate* to activate the environment
+
+### On Windows:
+
+*.\env\Scripts\activate*
+
+---
+
+## You can confirm you’re in the virtualenv by checking the location of your Python interpreter, it should point to the env directory.
+
+### On macOS and Linux:
+
+*which python*
+.../env/bin/python
+
+### On Windows:
+
+*where python*
+.../env/bin/python.exe
+
+As long as your virtualenv is activated pip will install packages into that specific environment and you’ll be able to import and use packages in your Python application.
+
+---
+
+## Leaving the virtualenv
+If you want to switch projects or otherwise leave your virtualenv, simply run:
+*deactivate*
 **Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
 
 When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
