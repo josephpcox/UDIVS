@@ -1,3 +1,12 @@
+#Utilizing *requirements.txt*
+
+Instead of pushing the virtual environment to the reapo we will just save our environments settings inside a requirements.txt file. Once you have your virtual envirnment set up outside of your local git repo
+use : *pip install -r requirements.txt* inside your activated virtual environment. It will automatically update your dependincies. If you make any changes to your local environment use pip *freez>requirements.txt* it will overwrite the requirements.txt file with all the python libraries that you have installed in your virtual environment including the ones that you recently added. This will save space and time on your commits and pulls from the repo.
+
+---
+
+
+
 ## Activating a virtualenv
  
 Activating a virtualenv will put the virtualenv-specific python and pip executables into your shell’s PATH.
