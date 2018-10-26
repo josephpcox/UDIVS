@@ -1,7 +1,18 @@
-# Checking getting the other  branches 
-Android :*git fetch && git checkout Android* - slack channel is (android)
-DataAnalysis: git fetch && git checkout DataAnalysis slack channel is (data analysis)
-Latex_Src: git fetch && git checkout Latex_src slack channel is (paper)
+# Getting the other branches 
+1. Android :*git fetch && git checkout Android* - slack channel is (android)
+2. DataAnalysis: git fetch && git checkout DataAnalysis slack channel is (data analysis)
+3. Latex_Src: git fetch && git checkout Latex_src slack channel is (paper)
+
+### Git branch
+
+Once you have the other branches you can run *git branch* and it should show you all the branches in a list and highlight the branch you are currently working on, it should look something like this:
+1. Android
+2. DataAnalysis
+3. Latex_Src
+4. master 
+
+###Git Checkout 
+To switch to the branch you need to work on by simply running *git checkout <branch name>* without the angle brackets. this will switch your branch to the one you specified in <branch name>
 
 ---
 
@@ -11,7 +22,6 @@ Instead of pushing the virtual environment to the reapo we will just save our en
 use : *pip install -r requirements.txt* inside your activated virtual environment. It will automatically update your dependincies. If you make any changes to your local environment use pip *freez>requirements.txt* it will overwrite the requirements.txt file with all the python libraries that you have installed in your virtual environment including the ones that you recently added. This will save space and time on your commits and pulls from the repo.
 
 ---
-
 
 
 ## Activating a virtualenv
