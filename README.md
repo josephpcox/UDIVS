@@ -1,3 +1,10 @@
+# Checking getting the other  branches 
+Android :*git fetch && git checkout Android* - slack channel is (android)
+DataAnalysis: git fetch && git checkout DataAnalysis slack channel is (data analysis)
+Latex_Src: git fetch && git checkout Latex_src slack channel is (paper)
+
+---
+
 #Utilizing *requirements.txt*
 
 Instead of pushing the virtual environment to the reapo we will just save our environments settings inside a requirements.txt file. Once you have your virtual envirnment set up outside of your local git repo
