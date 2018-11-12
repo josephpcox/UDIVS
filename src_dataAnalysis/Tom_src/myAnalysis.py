@@ -5,12 +5,13 @@ Created on Sat Oct 27 23:11:33 2018
 
 @author: tom
 """
-from datetime import timedelta
 import pandas as pd
 import matplotlib.pyplot as plt
 import random
 import numpy as np
 from operator import itemgetter
+from datetime import datetime
+
 #import numpy as np
 #from sklearn.feature_selection import VarianceThreshold
 
@@ -19,9 +20,10 @@ from operator import itemgetter
 #gets day and location
 def getLocation(DataFrame):
     #filters the Day and Place column only
-    filtered = DataFrame[['Day', 'Place','Time']].copy()
+    filtered = DataFrame[['Place','Time']].copy()
     
     #remove rows with Nan in any column
+    #filtered = filtered[(filtered.Place != 'home')]
     df = filtered.dropna()
     return df
 
@@ -44,10 +46,26 @@ def getActivity(DataFrame):
     final = final[(final.Activity != 'exhibition')]
     return df
 
-def getWeek(DataFrame):
-    delta = timedelta(days=7)
+#this returns a dataframe of location data for one day
+def getTodayLoc(DataFrame):
+    
+    #get data of one day
+    last_index = len(DataFrame) - 1
+    day = DataFrame.loc[last_index, 'Day']
+    df = DataFrame[DataFrame.Day == day]
+    df = getLocation(df)
+    
+    return df
 
-#       
+#this returns the time of place in the format HH:MM AM/PM
+def getHourTime(DataFrame):
+    
+    date_time = DataFrame['Time'].iloc[0]
+    time = datetime.strptime(date_time, '%a %b %d %H:%M:%S %Z %Y')
+    hour_time = time.strftime('%I:%M %p')
+    
+    return hour_time
+    
 def getData(DataFrame, Amount):
     lastday = DataFrame.iloc[:,1]
     lastindex = len(lastday.index)
@@ -67,6 +85,7 @@ def getRecentApp():
 def getRecentLocation():
     pass
 
+    
 def getOptions(n):
     
     options = []
@@ -113,58 +132,77 @@ def getOptions(n):
                     break
         random.shuffle(options,random.random)
         return ans,options
-        pass
+
     elif n == 2:
         """'which place were you at around:'"""
-        pass
+        time_loc = getTodayLoc(data)
+        ans_data = time_loc.sample(n=1)
+        ans = ans_data['Place'].iloc[0]
+        options.append(ans)
+        
+        print(getHourTime(ans_data), "\n")
+        
+        dummy_data = getLocation(data)
+        count = 1
+        
+        while count < 4:
+            random_day = dummy_data.sample(n=1)
+            place = random_day['Place'].iloc[0]
+            flag = 0
+            for y in options:
+                if y == place:
+                    flag = 1
+            if flag == 1:
+                pass
+            else:
+                options.append(place)
+                count = count + 1
+        random.shuffle(options,random.random)
+        return ans,options
+
     elif n == 3:
         """Which of these places did you go to yesterday?'"""
         pass
     
 
-
 data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/SmarterTimeTimeslots.csv')
 
-location = getLocation(data)
+#-----Week-and-Day-of-data-------------------------#
+#get a weeks worth of data
+#week = data.query('20181016 <= Day <= 20181023')
 
-Activity = getActivity(data)
-
-
-
+#new version of filter to one day without hardcoding
+last_index = len(data) - 1
+day = data.loc[last_index, 'Day']
+tomDay_df = data[data.Day == day]
 
 #------------------------------#
-#filter to one day
-tomDay_df = data[data.Day == 20181023]
+#get location
+week_loc = week[['Time', 'Place']]
+sorted_week =  week_loc[['Time', 'Place']].to_dict()
 
-#get location and activity
+#------------------------------------------------------------#
+#get the frequency of apps used for one day
 tomDay_dict = tomDay_df['Activity'].value_counts().to_dict()
 
 #tom's day sorted from greatest to least
 sortedTomDay = sorted(tomDay_dict.items(), key=itemgetter(1), reverse = True)
-
 #-------------------------------------------------------------------------------------------------------------------------#
-questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around:','Which of these places did you go to yesterday?']
+questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?']
 randomNums=random.sample(range(0,3),3)
 score = 0
 count = 1
 for n in randomNums:
-    if n != 0:
+    if n == 1 or n == 3:
         continue
     print(questions[n])
     ans,options = getOptions(n)
     print(ans)
     for o in options:
         print(count,". ",o)
-        count= count+1
+        count = count+1
     userAns=int(input("input answer here: ")) # Utilize Switch CasegetOptions(n)
-    if n == 0:
-        if ans == options[userAns-1]:
+    if ans == options[userAns-1]:
             score = score+1
-    if n == 1:
-        pass
-    if n == 2:
-        pass
-    if n == 3:
-        pass
-
-print(score)
+    count = 1
+    print(score)
