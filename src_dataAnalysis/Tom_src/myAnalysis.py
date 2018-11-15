@@ -10,14 +10,14 @@ import matplotlib.pyplot as plt
 import random
 import numpy as np
 from operator import itemgetter
-from datetime import datetime
+from datetime import datetime,timedelta
 
 #import numpy as np
 #from sklearn.feature_selection import VarianceThreshold
 
 #def getWeek(DataFrame):
 
-#gets day and location
+#gets day and location-------------------------------------------------------------------------------#
 def getLocation(DataFrame):
     #filters the Day and Place column only
     filtered = DataFrame[['Place','Time']].copy()
@@ -27,7 +27,7 @@ def getLocation(DataFrame):
     df = filtered.dropna()
     return df
 
-#gets time and activity
+#gets time and activity------------------------------------------------------------------------------#
 def getActivity(DataFrame):
     #filters the Day and Place column only
     filtered = DataFrame[['Day','Time', 'Activity']]
@@ -46,7 +46,9 @@ def getActivity(DataFrame):
     final = final[(final.Activity != 'exhibition')]
     return df
 
-#this returns a dataframe of location data for one day
+#this returns a dataframe of location data for one day-------------------------------------------------#
+#   grabs the last index in the file (indicating today's date)
+#   use index to return all the locations from today as Dataframe
 def getTodayLoc(DataFrame):
     
     #get data of one day
@@ -57,23 +59,46 @@ def getTodayLoc(DataFrame):
     
     return df
 
-#this returns the time of place in the format HH:MM AM/PM
+#get all data from yesterday
+#   uses datetime library to grab the all data from yesterday
+#   returns all the location from yesterday as a dataframe
+    
+def getYesterdayLoc(DataFrame):
+    
+    day = int(datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d'))
+    df = DataFrame[DataFrame.Day == day]
+    df = getLocation(df)
+    return df
+
+# steps------------------------------------------------------------------------------------------------# 
+# 1 creates a list of all the places visited in yesterday in placesVistedList
+# 2 make an empty list that stores incorrect locations called inCorrect_loc
+# iterate untill you have a list of 3
+# 2 grab a random place from the data set, check it against the placesvisitedList
+# if the random place does not exitst inside the place visted list 
+#   append it to the inCorrect_loc list:
+#else:
+# continue 
+def checkLocList():
+    
+
+#this returns the time of place in the format HH:MM AM/PM----------------------------------------------#
 def getHourTime(DataFrame):
     
     date_time = DataFrame['Time'].iloc[0]
     time = datetime.strptime(date_time, '%a %b %d %H:%M:%S %Z %Y')
     hour_time = time.strftime('%I:%M %p')
-    
     return hour_time
-    
+
+# This grabs location --------------------------------------------------------------------------------- #   
 def getData(DataFrame, Amount):
     lastday = DataFrame.iloc[:,1]
     lastindex = len(lastday.index)
     #count = o
     #lastIndex = Activities
-    
     return lastday[lastindex]
 
+# -----------------------------------------------------------------------------------------------------#
 def getRecentApp():
     for x in tomDay_df['Activity'][::-1]:
         if "phone:" not in x:
@@ -82,10 +107,12 @@ def getRecentApp():
         break
     return ans
 
+#-------------------------------------------------------------------------------------------------------#
+# get the first location that is not the current location, generate incorrect answeres 
 def getRecentLocation():
     pass
 
-    
+# Produces the options for the UDIVS---------------------------------------------------------------------#
 def getOptions(n):
     
     options = []
@@ -162,8 +189,27 @@ def getOptions(n):
 
     elif n == 3:
         """Which of these places did you go to yesterday?'"""
-        pass
-    
+        time_loc = getYesterdayLoc(data)
+        ans_data = time_loc.sample(n=1)
+        ans = ans_data['Place'].iloc[0]
+        options.append(ans)
+        
+        dummy_data = getLocation(data)
+        count = 1
+        while count < 4:
+            random_day = dummy_data.sample(n=1)
+            place = random_day['Place'].iloc[0]
+            flag = 0
+            for y in options:
+                if y == place:
+                    flag = 1
+            if flag == 1:
+                pass
+            else:
+                options.append(place)
+                count = count + 1
+        random.shuffle(options,random.random)
+        return ans,options
 
 data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/SmarterTimeTimeslots.csv')
 
@@ -178,8 +224,8 @@ tomDay_df = data[data.Day == day]
 
 #------------------------------#
 #get location
-week_loc = week[['Time', 'Place']]
-sorted_week =  week_loc[['Time', 'Place']].to_dict()
+# week_loc = week[['Time', 'Place']]
+# 4sorted_week =  week_loc[['Time', 'Place']].to_dict()
 
 #------------------------------------------------------------#
 #get the frequency of apps used for one day
@@ -187,13 +233,15 @@ tomDay_dict = tomDay_df['Activity'].value_counts().to_dict()
 
 #tom's day sorted from greatest to least
 sortedTomDay = sorted(tomDay_dict.items(), key=itemgetter(1), reverse = True)
+
 #-------------------------------------------------------------------------------------------------------------------------#
 questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?']
-randomNums=random.sample(range(0,3),3)
+randomNums=random.sample(range(0,4),3)
+print(randomNums)
 score = 0
 count = 1
 for n in randomNums:
-    if n == 1 or n == 3:
+    if n == 1:
         continue
     print(questions[n])
     ans,options = getOptions(n)
@@ -206,3 +254,4 @@ for n in randomNums:
             score = score+1
     count = 1
     print(score)
+    
