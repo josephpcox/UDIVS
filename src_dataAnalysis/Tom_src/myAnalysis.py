@@ -23,7 +23,6 @@ def getLocation(DataFrame):
     filtered = DataFrame[['Place','Time']].copy()
     
     #remove rows with Nan in any column
-    #filtered = filtered[(filtered.Place != 'home')]
     df = filtered.dropna()
     return df
 
@@ -51,9 +50,10 @@ def getActivity(DataFrame):
 #   use index to return all the locations from today as Dataframe
 def getTodayLoc(DataFrame):
     
+    day = int(datetime.strftime(datetime.now(), '%Y%m%d'))
     #get data of one day
-    last_index = len(DataFrame) - 1
-    day = DataFrame.loc[last_index, 'Day']
+    #last_index = len(DataFrame) - 1
+    #day = DataFrame.loc[last_index, 'Day']
     df = DataFrame[DataFrame.Day == day]
     df = getLocation(df)
     
@@ -61,8 +61,7 @@ def getTodayLoc(DataFrame):
 
 #get all data from yesterday
 #   uses datetime library to grab the all data from yesterday
-#   returns all the location from yesterday as a dataframe
-    
+#   returns all the location from yesterday as a dataframe  
 def getYesterdayLoc(DataFrame):
     
     day = int(datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d'))
@@ -77,10 +76,14 @@ def getYesterdayLoc(DataFrame):
 # 2 grab a random place from the data set, check it against the placesvisitedList
 # if the random place does not exitst inside the place visted list 
 #   append it to the inCorrect_loc list:
-#else:
+# else:
 # continue 
-def checkLocList():
+def checkLocList(DataFrame):
     
+    df = getYesterdayLoc(DataFrame)
+    df = df.drop_duplicates(subset = 'Place', keep = 'first')
+    df = df['Place']
+    return df
 
 #this returns the time of place in the format HH:MM AM/PM----------------------------------------------#
 def getHourTime(DataFrame):
@@ -123,7 +126,7 @@ def getOptions(n):
         ans = getRecentApp()
         options.append(ans)
         count = 1
-        
+        print('Which app did you use most recently?\n')
         #this loop gives an array of answers called options for the user to choose from
         for x in tomDay_df['Activity']:
             flag = 0
@@ -145,6 +148,7 @@ def getOptions(n):
         options.append(ans)
         count = 1
         
+        print('What place were you at most recently?\n')
         #this loop gives an array of answers called options for the user to choose from
         for x in location['Activity']:
             flag = 0
@@ -162,13 +166,13 @@ def getOptions(n):
 
     elif n == 2:
         """'which place were you at around:'"""
+        
         time_loc = getTodayLoc(data)
         ans_data = time_loc.sample(n=1)
         ans = ans_data['Place'].iloc[0]
         options.append(ans)
         
-        print(getHourTime(ans_data), "\n")
-        
+        print('which place were you at around', getHourTime(ans_data), 'today\n')
         dummy_data = getLocation(data)
         count = 1
         
@@ -190,16 +194,21 @@ def getOptions(n):
     elif n == 3:
         """Which of these places did you go to yesterday?'"""
         time_loc = getYesterdayLoc(data)
-        ans_data = time_loc.sample(n=1)
+        ans_data = time_loc.sample(n = 1)
         ans = ans_data['Place'].iloc[0]
         options.append(ans)
+        placesVisited = checkLocList(data)
         
+        print('Which of these places did you go to yesterday?\n')
         dummy_data = getLocation(data)
         count = 1
         while count < 4:
             random_day = dummy_data.sample(n=1)
             place = random_day['Place'].iloc[0]
             flag = 0
+            for z in placesVisited:
+                if z == place:
+                    flag = 1
             for y in options:
                 if y == place:
                     flag = 1
@@ -210,6 +219,8 @@ def getOptions(n):
                 count = count + 1
         random.shuffle(options,random.random)
         return ans,options
+        
+        
 
 data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/SmarterTimeTimeslots.csv')
 
@@ -235,7 +246,7 @@ tomDay_dict = tomDay_df['Activity'].value_counts().to_dict()
 sortedTomDay = sorted(tomDay_dict.items(), key=itemgetter(1), reverse = True)
 
 #-------------------------------------------------------------------------------------------------------------------------#
-questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?']
+questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?', 'How long were you on this app?']
 randomNums=random.sample(range(0,4),3)
 print(randomNums)
 score = 0
@@ -243,9 +254,8 @@ count = 1
 for n in randomNums:
     if n == 1:
         continue
-    print(questions[n])
     ans,options = getOptions(n)
-    print(ans)
+    #print(ans)
     for o in options:
         print(count,". ",o)
         count = count+1
@@ -253,5 +263,4 @@ for n in randomNums:
     if ans == options[userAns-1]:
             score = score+1
     count = 1
-    print(score)
-    
+    #print(score)
