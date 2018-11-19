@@ -80,7 +80,7 @@ def getYesterdayLoc(DataFrame):
 #else:
 # continue 
 def checkLocList():
-    
+    pass
 
 #this returns the time of place in the format HH:MM AM/PM----------------------------------------------#
 def getHourTime(DataFrame):
@@ -110,7 +110,21 @@ def getRecentApp():
 #-------------------------------------------------------------------------------------------------------#
 # get the first location that is not the current location, generate incorrect answeres 
 def getRecentLocation():
-    pass
+    x=1
+    while(True):
+       curLoc = tomDay_df['Place'].iloc[-x]
+       if curLoc == "nan":
+           x = x+1
+       else:
+           break
+    print("curLock:",curLoc)
+    
+    for x in locData[::-1]:
+       if x != curLoc:
+           ans = x
+           break
+       
+    return ans
 
 # Produces the options for the UDIVS---------------------------------------------------------------------#
 def getOptions(n):
@@ -140,25 +154,25 @@ def getOptions(n):
         return ans,options
     
     elif n == 1:
-        """'What place were you at most recently?'"""
-        ans = getRecentLocation()
-        options.append(ans)
-        count = 1
-        
-        #this loop gives an array of answers called options for the user to choose from
-        for x in location['Activity']:
-            flag = 0
-            if "phone:" in x:
-                for y in options:
-                    if x == y:
-                        flag = 1
-                if flag == 0:
-                    options.append(x)
-                    count = count +1
-                if count == 4:
-                    break
-        random.shuffle(options,random.random)
-        return ans,options
+       """What place were you at most recently?"""
+       ans = getRecentLocation()
+       options.append(ans)
+       count = 1
+
+       locData = tomDay_df['Place'].dropna()
+       #this loop gives an array of answers called options for the user to choose from
+       for x in locData:
+           flag = 0
+           for y in options:
+               if x == y:
+                   flag = 1
+           if flag == 0:
+               options.append(x)
+               count = count +1
+           if count == 4:
+               break
+       random.shuffle(options,random.random)
+       return ans,options
 
     elif n == 2:
         """'which place were you at around:'"""
@@ -241,7 +255,7 @@ print(randomNums)
 score = 0
 count = 1
 for n in randomNums:
-    if n == 1:
+    if n == 3:
         continue
     print(questions[n])
     ans,options = getOptions(n)
@@ -255,3 +269,4 @@ for n in randomNums:
     count = 1
     print(score)
     
+
