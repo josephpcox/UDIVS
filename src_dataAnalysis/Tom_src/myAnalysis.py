@@ -11,6 +11,7 @@ import random
 import numpy as np
 from operator import itemgetter
 from datetime import datetime,timedelta
+import math
 
 #import numpy as np
 #from sklearn.feature_selection import VarianceThreshold
@@ -23,7 +24,6 @@ def getLocation(DataFrame):
     filtered = DataFrame[['Place','Time']].copy()
     
     #remove rows with Nan in any column
-    #filtered = filtered[(filtered.Place != 'home')]
     df = filtered.dropna()
     return df
 
@@ -51,9 +51,7 @@ def getActivity(DataFrame):
 #   use index to return all the locations from today as Dataframe
 def getTodayLoc(DataFrame):
     
-    #get data of one day
-    last_index = len(DataFrame) - 1
-    day = DataFrame.loc[last_index, 'Day']
+    day = int(datetime.strftime(datetime.now(), '%Y%m%d'))
     df = DataFrame[DataFrame.Day == day]
     df = getLocation(df)
     
@@ -61,8 +59,7 @@ def getTodayLoc(DataFrame):
 
 #get all data from yesterday
 #   uses datetime library to grab the all data from yesterday
-#   returns all the location from yesterday as a dataframe
-    
+#   returns all the location from yesterday as a dataframe  
 def getYesterdayLoc(DataFrame):
     
     day = int(datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d'))
@@ -71,6 +68,7 @@ def getYesterdayLoc(DataFrame):
     return df
 
 # steps------------------------------------------------------------------------------------------------# 
+<<<<<<< HEAD
 # 1 creates a list of all the places visited in yesterday in placesVistedList
 # 2 make an empty list that stores incorrect locations called inCorrect_loc
 # iterate untill you have a list of 3
@@ -81,6 +79,14 @@ def getYesterdayLoc(DataFrame):
 # continue 
 def checkLocList():
     pass
+=======
+def checkLocList(DataFrame):
+    
+    df = getYesterdayLoc(DataFrame)
+    df = df.drop_duplicates(subset = 'Place', keep = 'first')
+    df = df['Place']
+    return df
+>>>>>>> e76f44b51b11a566801b60a293d32ceedbc64dda
 
 #this returns the time of place in the format HH:MM AM/PM----------------------------------------------#
 def getHourTime(DataFrame):
@@ -92,11 +98,32 @@ def getHourTime(DataFrame):
 
 # This grabs location --------------------------------------------------------------------------------- #   
 def getData(DataFrame, Amount):
+    
     lastday = DataFrame.iloc[:,1]
     lastindex = len(lastday.index)
     #count = o
     #lastIndex = Activities
     return lastday[lastindex]
+
+# function returns an array of applications used in a day each with a total duration 
+def getDuration(DataFrame):
+    
+    day = int(datetime.strftime(datetime.now(), '%Y%m%d'))
+    df = data[data.Day == day]
+    df = df[['Time', 'Activity', 'Duration ms']].copy()
+    df = df.dropna()
+    df = df[df['Activity'].str.contains("phone:")]
+    group = df.groupby('Activity').sum()
+    
+    return group
+
+# function converts miliseconds to minutes
+def convertms(ms):
+    
+    minutes = (miliseconds/(1000*60))
+    minutes = math.floor(minutes)
+
+    return minutes
 
 # -----------------------------------------------------------------------------------------------------#
 def getRecentApp():
@@ -137,7 +164,7 @@ def getOptions(n):
         ans = getRecentApp()
         options.append(ans)
         count = 1
-        
+        print('Which app did you use most recently?\n')
         #this loop gives an array of answers called options for the user to choose from
         for x in tomDay_df['Activity']:
             flag = 0
@@ -154,6 +181,7 @@ def getOptions(n):
         return ans,options
     
     elif n == 1:
+<<<<<<< HEAD
        """What place were you at most recently?"""
        ans = getRecentLocation()
        options.append(ans)
@@ -173,16 +201,38 @@ def getOptions(n):
                break
        random.shuffle(options,random.random)
        return ans,options
+=======
+        """'What place were you at most recently?'"""
+        ans = getRecentLocation()
+        options.append(ans)
+        count = 1
+        
+        print('What place were you at most recently?\n')
+        #this loop gives an array of answers called options for the user to choose from
+        for x in location['Activity']:
+            flag = 0
+            if "phone:" in x:
+                for y in options:
+                    if x == y:
+                        flag = 1
+                if flag == 0:
+                    options.append(x)
+                    count = count +1
+                if count == 4:
+                    break
+        random.shuffle(options,random.random)
+        return ans,options
+>>>>>>> e76f44b51b11a566801b60a293d32ceedbc64dda
 
     elif n == 2:
         """'which place were you at around:'"""
+        
         time_loc = getTodayLoc(data)
         ans_data = time_loc.sample(n=1)
         ans = ans_data['Place'].iloc[0]
         options.append(ans)
         
-        print(getHourTime(ans_data), "\n")
-        
+        print('which place were you at around', getHourTime(ans_data), 'today\n')
         dummy_data = getLocation(data)
         count = 1
         
@@ -204,16 +254,21 @@ def getOptions(n):
     elif n == 3:
         """Which of these places did you go to yesterday?'"""
         time_loc = getYesterdayLoc(data)
-        ans_data = time_loc.sample(n=1)
+        ans_data = time_loc.sample(n = 1)
         ans = ans_data['Place'].iloc[0]
         options.append(ans)
+        placesVisited = checkLocList(data)
         
+        print('Which of these places did you go to yesterday?\n')
         dummy_data = getLocation(data)
         count = 1
         while count < 4:
             random_day = dummy_data.sample(n=1)
             place = random_day['Place'].iloc[0]
             flag = 0
+            for z in placesVisited:
+                if z == place:
+                    flag = 1
             for y in options:
                 if y == place:
                     flag = 1
@@ -224,6 +279,32 @@ def getOptions(n):
                 count = count + 1
         random.shuffle(options,random.random)
         return ans,options
+    
+    elif n == 4:
+        """'About how long did you use __ for'"""
+        options = ['0-10 minutes', '11-20 minutes', '21-30 minutes', '+30 minutes']
+        
+        groups = getDuration(data)
+        activity = groups.sample(n=1)
+        miliseconds = int(activity['Duration ms'])
+        minutes = convertms(miliseconds)
+        app = activity.index[0]
+        
+        print("About how long did you use", app.replace('phone: ', '', 1), "today?")
+        
+        if minutes <= 10:
+            ans = options[0]
+        elif minutes <= 20:
+            ans = options[1]
+        elif minutes <= 30:
+            ans = options[2]
+        else: 
+            ans = options[3]
+        
+        
+        return ans,options
+        
+        
 
 data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/SmarterTimeTimeslots.csv')
 
@@ -249,17 +330,20 @@ tomDay_dict = tomDay_df['Activity'].value_counts().to_dict()
 sortedTomDay = sorted(tomDay_dict.items(), key=itemgetter(1), reverse = True)
 
 #-------------------------------------------------------------------------------------------------------------------------#
-questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?']
-randomNums=random.sample(range(0,4),3)
+questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?', 'How long were you on this app?']
+randomNums=random.sample(range(0,5),3)
 print(randomNums)
 score = 0
 count = 1
 for n in randomNums:
+<<<<<<< HEAD
     if n == 3:
+=======
+    if n == 1 or n == 0 or n == 2 or n == 3:
+>>>>>>> e76f44b51b11a566801b60a293d32ceedbc64dda
         continue
-    print(questions[n])
     ans,options = getOptions(n)
-    print(ans)
+    #print(ans)
     for o in options:
         print(count,". ",o)
         count = count+1
@@ -267,6 +351,10 @@ for n in randomNums:
     if ans == options[userAns-1]:
             score = score+1
     count = 1
+<<<<<<< HEAD
     print(score)
     
 
+=======
+    #print(score)
+>>>>>>> e76f44b51b11a566801b60a293d32ceedbc64dda
