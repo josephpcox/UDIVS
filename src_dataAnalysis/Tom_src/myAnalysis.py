@@ -11,6 +11,7 @@ import random
 import numpy as np
 from operator import itemgetter
 from datetime import datetime,timedelta
+import math
 
 #import numpy as np
 #from sklearn.feature_selection import VarianceThreshold
@@ -51,9 +52,6 @@ def getActivity(DataFrame):
 def getTodayLoc(DataFrame):
     
     day = int(datetime.strftime(datetime.now(), '%Y%m%d'))
-    #get data of one day
-    #last_index = len(DataFrame) - 1
-    #day = DataFrame.loc[last_index, 'Day']
     df = DataFrame[DataFrame.Day == day]
     df = getLocation(df)
     
@@ -70,14 +68,6 @@ def getYesterdayLoc(DataFrame):
     return df
 
 # steps------------------------------------------------------------------------------------------------# 
-# 1 creates a list of all the places visited in yesterday in placesVistedList
-# 2 make an empty list that stores incorrect locations called inCorrect_loc
-# iterate untill you have a list of 3
-# 2 grab a random place from the data set, check it against the placesvisitedList
-# if the random place does not exitst inside the place visted list 
-#   append it to the inCorrect_loc list:
-# else:
-# continue 
 def checkLocList(DataFrame):
     
     df = getYesterdayLoc(DataFrame)
@@ -95,11 +85,32 @@ def getHourTime(DataFrame):
 
 # This grabs location --------------------------------------------------------------------------------- #   
 def getData(DataFrame, Amount):
+    
     lastday = DataFrame.iloc[:,1]
     lastindex = len(lastday.index)
     #count = o
     #lastIndex = Activities
     return lastday[lastindex]
+
+# function returns an array of applications used in a day each with a total duration 
+def getDuration(DataFrame):
+    
+    day = int(datetime.strftime(datetime.now(), '%Y%m%d'))
+    df = data[data.Day == day]
+    df = df[['Time', 'Activity', 'Duration ms']].copy()
+    df = df.dropna()
+    df = df[df['Activity'].str.contains("phone:")]
+    group = df.groupby('Activity').sum()
+    
+    return group
+
+# function converts miliseconds to minutes
+def convertms(ms):
+    
+    minutes = (miliseconds/(1000*60))
+    minutes = math.floor(minutes)
+
+    return minutes
 
 # -----------------------------------------------------------------------------------------------------#
 def getRecentApp():
@@ -219,6 +230,30 @@ def getOptions(n):
                 count = count + 1
         random.shuffle(options,random.random)
         return ans,options
+    
+    elif n == 4:
+        """'About how long did you use __ for'"""
+        options = ['0-10 minutes', '11-20 minutes', '21-30 minutes', '+30 minutes']
+        
+        groups = getDuration(data)
+        activity = groups.sample(n=1)
+        miliseconds = int(activity['Duration ms'])
+        minutes = convertms(miliseconds)
+        app = activity.index[0]
+        
+        print("About how long did you use", app.replace('phone: ', '', 1), "today?")
+        
+        if minutes <= 10:
+            ans = options[0]
+        elif minutes <= 20:
+            ans = options[1]
+        elif minutes <= 30:
+            ans = options[2]
+        else: 
+            ans = options[3]
+        
+        
+        return ans,options
         
         
 
@@ -247,12 +282,12 @@ sortedTomDay = sorted(tomDay_dict.items(), key=itemgetter(1), reverse = True)
 
 #-------------------------------------------------------------------------------------------------------------------------#
 questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?', 'How long were you on this app?']
-randomNums=random.sample(range(0,4),3)
+randomNums=random.sample(range(0,5),3)
 print(randomNums)
 score = 0
 count = 1
 for n in randomNums:
-    if n == 1:
+    if n == 1 or n == 0 or n == 2 or n == 3:
         continue
     ans,options = getOptions(n)
     #print(ans)
