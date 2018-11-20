@@ -130,7 +130,7 @@ def convertms(ms):
 # -----------------------------------------------------------------------------------------------------#
 def getRecentApp():
     ''' This helper function returns the most recent app used for the UDIVS system'''
-    for x in tomDay_df['Activity'][::-1]:
+    for x in somDay_df['Activity'][::-1]:
         if "phone:" not in x:
             continue
         ans = x
@@ -143,14 +143,14 @@ def getRecentLocation():
     ''' Returns the most recent app used by the user for the UDIVS system'''
     x=1
     while(True):
-       curLoc = tomDay_df['Place'].iloc[-x]
+       curLoc = somDay_df['Place'].iloc[-x]
        if curLoc == "nan":
            x = x+1
        else:
            break
     #print("curLock:",curLoc)
     
-    locData = tomDay_df['Place'].dropna()
+    locData = somDay_df['Place'].dropna()
     #print(locData)
     ans = ""
     for x in locData[::-1]:
@@ -177,7 +177,7 @@ def getOptions(n):
         count = 1
         print('Which app did you use most recently?\n')
         #this loop gives an array of answers called options for the user to choose from
-        for x in tomDay_df['Activity']:
+        for x in somDay_df['Activity']:
             flag = 0
             if "phone:" in x:
                 for y in options:
@@ -198,7 +198,7 @@ def getOptions(n):
        options.append(ans)
        count = 1
 
-       locData = tomDay_df['Place'].dropna()
+       locData = somDay_df['Place'].dropna()
        print('What place were you at most recently?\n')
        #this loop gives an array of answers called options for the user to choose from
        for x in locData:
@@ -292,13 +292,42 @@ def getOptions(n):
             ans = options[3]
         
         return ans,options
+    elif n ==5:
+        '''which app did you use most frequently today'''
+        print("Which app did you use most frequently today?")
+        applicationList = []
+        count = 1
+        for x in somDay_df['Activity']:
+            if "phone:" in x:
+                applicationList.append(x)
+        app_df = pd.DataFrame(data = applicationList)
+        applicationDict =app_df[0].value_counts().to_dict()
+        ans = applicationDict.popitem()
+        ans = ans[0]
+        options.append(ans)
+        for x in somDay_df['Activity']:
+            flag = 0
+            if "phone:" in x:
+                for y in options:
+                    if x == y:
+                        flag = 1
+                if flag == 0:
+                    options.append(x)
+                    count = count +1
+                if count == 4:
+                    break
+        random.shuffle(options,random.random)
+        return ans,options
+        
+                
+        
 
 data = pd.read_csv('../../userdevice_data/Joe_Data/Smarter_time/timeslots.csv')
 
 #new version of filter to one day without hardcoding
 last_index = len(data) - 1
 day = data.loc[last_index, 'Day']
-tomDay_df = data[data.Day == day]
+somDay_df = data[data.Day == day]
 #-------------------------------------------------------------------------------------------------------------------------#
 '''
 This is where the actual survey begins, we ask the user three questions form or question set
@@ -306,9 +335,11 @@ This is a score fusion with a random question form features chosen from the data
 
 '''
 #-------------------------------------------------------------------------------------------------------------------------#
+
 print("Welcome to Joe's Device ! See if you can enter!")
-questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?', 'How long were you on this app?']
-randomNums=random.sample(range(0,5),3)
+questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?', 
+           'How long were you on this app?','Which app did you use most frequently today?']
+randomNums=random.sample(range(0,6),3)
 print(randomNums)
 # Ask the user if they are genuine or an imposter to collect the data properly
 user = 2
@@ -382,3 +413,4 @@ Q4_imp = pd.read_csv('../raw_scores/question4_imposter.csv')
 
 Q5_gen = pd.read_csv('../raw_scores/question5_genuine.csv')
 Q5_imp = pd.read_csv('../raw_scores/question5_imposter.csv')
+
