@@ -176,7 +176,7 @@ def getOptions(n):
         count = 1
         print('Which app did you use most recently?\n')
         #this loop gives an array of answers called options for the user to choose from
-        for x in tomDay_df['Activity']:
+        for x in somDay_df['Activity']:
             flag = 0
             if "phone:" in x:
                 for y in options:
@@ -197,7 +197,7 @@ def getOptions(n):
        options.append(ans)
        count = 1
 
-       locData = tomDay_df['Place'].dropna()
+       locData = somDay_df['Place'].dropna()
        print('What place were you at most recently?\n')
        #this loop gives an array of answers called options for the user to choose from
        for x in locData:
@@ -324,7 +324,7 @@ data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/timeslots.csv')
 #new version of filter to one day without hardcoding
 last_index = len(data) - 1
 day = data.loc[last_index, 'Day']
-tomDay_df = data[data.Day == day]
+somDay_df = data[data.Day == day]
 #-------------------------------------------------------------------------------------------------------------------------#
 '''
 This is where the actual survey begins, we ask the user three questions form or question set
