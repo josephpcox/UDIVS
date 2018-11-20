@@ -13,6 +13,7 @@ from operator import itemgetter
 from datetime import datetime,timedelta
 import math
 import csv
+import os.path
 
 #import numpy as np
 #from sklearn.feature_selection import VarianceThreshold
@@ -325,7 +326,7 @@ score = 0
 count = 1
 for n in randomNums:
     ans,options = getOptions(n)
-    #print(ans)
+    print(ans)
     for o in options:
         print(count,". ",o)
         count = count+1
@@ -364,8 +365,8 @@ file.close()
 and True Reject Rate, True Accept Rate for the total system as well as analysis on each question'''
 
 # Generate genuine and imposter scores with the seed at 1
-genuine_scores = pd.read_csv('../raw_scoressurvey_score_genuine.csv')
-imposter_scores = pd.read_csv('../raw_scoressurvey_score_imposter.csv')
+genuine_scores = pd.read_csv('../raw_scores/survey_score_genuine.csv')
+imposter_scores = pd.read_csv('../raw_scores/survey_score_imposter.csv')
 
 Q1_gen = pd.read_csv('../raw_scores/question1_genuine.csv')
 Q1_imp = pd.read_csv('../raw_scores/question1_imposter.csv')

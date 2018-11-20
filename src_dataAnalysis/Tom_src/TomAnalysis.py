@@ -292,7 +292,7 @@ def getOptions(n):
         
         return ans,options
 
-data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/SmarterTimeTimeslots.csv')
+data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/timeslots.csv')
 
 #new version of filter to one day without hardcoding
 last_index = len(data) - 1
@@ -364,8 +364,8 @@ file.close()
 and True Reject Rate, True Accept Rate for the total system as well as analysis on each question'''
 
 # Generate genuine and imposter scores with the seed at 1
-genuine_scores = pd.read_csv('survey_score_genuine.csv')
-imposter_scores = pd.read_csv('survey_score_imposter.csv')
+genuine_scores = pd.read_csv('../raw_scores/survey_score_genuine.csv')
+imposter_scores = pd.read_csv('../raw_scores/survey_score_imposter.csv')
 
 Q1_gen = pd.read_csv('../raw_scores/question1_genuine.csv')
 Q1_imp = pd.read_csv('../raw_scores/question1_imposter.csv')
