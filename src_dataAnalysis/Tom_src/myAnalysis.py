@@ -12,6 +12,7 @@ import numpy as np
 from operator import itemgetter
 from datetime import datetime,timedelta
 import math
+import csv
 
 #import numpy as np
 #from sklearn.feature_selection import VarianceThreshold
@@ -68,7 +69,7 @@ def getYesterdayLoc(DataFrame):
     return df
 
 # steps------------------------------------------------------------------------------------------------# 
-<<<<<<< HEAD
+
 # 1 creates a list of all the places visited in yesterday in placesVistedList
 # 2 make an empty list that stores incorrect locations called inCorrect_loc
 # iterate untill you have a list of 3
@@ -77,16 +78,14 @@ def getYesterdayLoc(DataFrame):
 #   append it to the inCorrect_loc list:
 #else:
 # continue 
-def checkLocList():
-    pass
-=======
+
 def checkLocList(DataFrame):
     
     df = getYesterdayLoc(DataFrame)
     df = df.drop_duplicates(subset = 'Place', keep = 'first')
     df = df['Place']
     return df
->>>>>>> e76f44b51b11a566801b60a293d32ceedbc64dda
+
 
 #this returns the time of place in the format HH:MM AM/PM----------------------------------------------#
 def getHourTime(DataFrame):
@@ -120,7 +119,7 @@ def getDuration(DataFrame):
 # function converts miliseconds to minutes
 def convertms(ms):
     
-    minutes = (miliseconds/(1000*60))
+    minutes = (ms/(1000*60))
     minutes = math.floor(minutes)
 
     return minutes
@@ -137,6 +136,7 @@ def getRecentApp():
 #-------------------------------------------------------------------------------------------------------#
 # get the first location that is not the current location, generate incorrect answeres 
 def getRecentLocation():
+    
     x=1
     while(True):
        curLoc = tomDay_df['Place'].iloc[-x]
@@ -144,13 +144,15 @@ def getRecentLocation():
            x = x+1
        else:
            break
-    print("curLock:",curLoc)
+    #print("curLock:",curLoc)
     
+    locData = tomDay_df['Place'].dropna()
+    #print(locData)
+    ans = ""
     for x in locData[::-1]:
-       if x != curLoc:
-           ans = x
-           break
-       
+        if x != curLoc:
+            ans = x
+            break
     return ans
 
 # Produces the options for the UDIVS---------------------------------------------------------------------#
@@ -181,13 +183,14 @@ def getOptions(n):
         return ans,options
     
     elif n == 1:
-<<<<<<< HEAD
+
        """What place were you at most recently?"""
        ans = getRecentLocation()
        options.append(ans)
        count = 1
 
        locData = tomDay_df['Place'].dropna()
+       print('What place were you at most recently?\n')
        #this loop gives an array of answers called options for the user to choose from
        for x in locData:
            flag = 0
@@ -201,28 +204,6 @@ def getOptions(n):
                break
        random.shuffle(options,random.random)
        return ans,options
-=======
-        """'What place were you at most recently?'"""
-        ans = getRecentLocation()
-        options.append(ans)
-        count = 1
-        
-        print('What place were you at most recently?\n')
-        #this loop gives an array of answers called options for the user to choose from
-        for x in location['Activity']:
-            flag = 0
-            if "phone:" in x:
-                for y in options:
-                    if x == y:
-                        flag = 1
-                if flag == 0:
-                    options.append(x)
-                    count = count +1
-                if count == 4:
-                    break
-        random.shuffle(options,random.random)
-        return ans,options
->>>>>>> e76f44b51b11a566801b60a293d32ceedbc64dda
 
     elif n == 2:
         """'which place were you at around:'"""
@@ -305,6 +286,10 @@ def getOptions(n):
 
 data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/SmarterTimeTimeslots.csv')
 
+#new version of filter to one day without hardcoding
+last_index = len(data) - 1
+day = data.loc[last_index, 'Day']
+tomDay_df = data[data.Day == day]
 #-------------------------------------------------------------------------------------------------------------------------#
 questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?', 'How long were you on this app?']
 randomNums=random.sample(range(0,5),3)
@@ -312,11 +297,8 @@ print(randomNums)
 score = 0
 count = 1
 for n in randomNums:
-<<<<<<< HEAD
+    genuine = True
     if n == 3:
-=======
-    if n == 1 or n == 0 or n == 2 or n == 3:
->>>>>>> e76f44b51b11a566801b60a293d32ceedbc64dda
         continue
     ans,options = getOptions(n)
     #print(ans)
@@ -324,19 +306,19 @@ for n in randomNums:
         print(count,". ",o)
         count = count+1
     userAns=int(input("input answer here: ")) # Utilize Switch CasegetOptions(n)
+    if genuine:
+        user = 'genuine'
+    else:
+        user = 'imposter'
+    Q_Num = n + 1
+    file = open('question' + str(Q_Num) + '_' + user + '.csv','a')
     if ans == options[userAns-1]:
-        score = score+1
+        score = score + 1
+        file.write(str(1)+',')
+    else:
+        file.write(str(0)+',')
+    file.close()    
     count = 1
-<<<<<<< HEAD
-    
-    #print(score)
-    
-=======
-<<<<<<< HEAD
     print(score)
-    
 
-=======
-    #print(score)
->>>>>>> e76f44b51b11a566801b60a293d32ceedbc64dda
->>>>>>> 72168b493e6a6df3544627f8541217b17c1042cc
+

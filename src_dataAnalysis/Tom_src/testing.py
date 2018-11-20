@@ -75,11 +75,14 @@ import math
 #
 #data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/SmarterTimeTimeslots.csv')
 
-import csv   
-fields = ['1']
+#import csv   
+#fields = ['1']
+#
+#with open(r'Q1Genuine.csv', 'a') as f:
+#    writer = csv.writer(f)
+#    writer.write(1)
 
-with open(r'Q1Genuine.csv', 'a') as f:
-    writer = csv.writer(f)
-    writer.write(1)
+user = "genuine"
+data = 'question' + str(1) + '_' + user + '.csv'
 
-
+print(data)
