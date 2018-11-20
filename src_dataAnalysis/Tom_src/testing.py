@@ -14,63 +14,72 @@ from operator import itemgetter
 from datetime import datetime,timedelta
 import math
 
-def getLocation(DataFrame):
-    #filters the Day and Place column only
-    filtered = DataFrame[['Place','Time']].copy()
-    
-    #remove rows with Nan in any column
-    df = filtered.dropna()
-    return df
+#-----Week-and-Day-of-data-------------------------#
+#get a weeks worth of data
+#week = data.query('20181016 <= Day <= 20181023')
 
-#gets time and activity------------------------------------------------------------------------------#
-def getActivity(DataFrame):
-    #filters the Day and Place column only
-    filtered = DataFrame[['Day','Time', 'Activity']]
-    
-    #remove rows with Nam in any column
-    df = filtered.dropna()
-    
-    final = df[(df.Activity != 'walk')]
-    final = final[(final.Activity != 'lesson')]
-    final = final[(final.Activity != 'home time')]
-    final = final[(final.Activity != 'vehicle')]
-    final = final[(final.Activity != 'groceries')]
-    final = final[(final.Activity != 'sleep')]
-    final = final[(final.Activity != 'drinks')]
-    final = final[(final.Activity != 'religion')]
-    final = final[(final.Activity != 'exhibition')]
-    return df
+#new version of filter to one day without hardcoding
+#last_index = len(data) - 1
+#day = data.loc[last_index, 'Day']
+#tomDay_df = data[data.Day == day]
 
-#this returns a dataframe of location data for one day-------------------------------------------------#
-#   grabs the last index in the file (indicating today's date)
-#   use index to return all the locations from today as Dataframe
-def getTodayLoc(DataFrame):
-    
-    day = int(datetime.strftime(datetime.now(), '%Y%m%d'))
-    df = DataFrame[DataFrame.Day == day]
-    df = getLocation(df)
-    
-    return df
+#------------------------------#
+#get location
+# week_loc = week[['Time', 'Place']]
+# 4sorted_week =  week_loc[['Time', 'Place']].to_dict()
 
-data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/SmarterTimeTimeslots.csv')
+#------------------------------------------------------------#
+#get the frequency of apps used for one day
+#tomDay_dict = tomDay_df['Activity'].value_counts().to_dict()
 
-day = int(datetime.strftime(datetime.now()- timedelta(2), '%Y%m%d'))
-df = data[data.Day == day]
-df = df[['Time', 'Activity', 'Duration ms']].copy()
-df = df.dropna()
-df = df[df['Activity'].str.contains("phone:")]
-group = df.groupby('Activity').sum()
-activity = group.sample(n=1)
-app = activity.index[0]
-miliseconds = int(activity['Duration ms'])
-minutes = (miliseconds/(1000*60))
-minutes = math.floor(minutes)
+#tom's day sorted from greatest to least
 
-if minutes <= 10:
-    ans = '0-10'
-elif minutes <= 20:
-    ans = '11-20'
-elif minutes <= 30:
-    ans = '21-30'
-else: 
-    ans = '+30'
+#sortedTomDay = sorted(tomDay_dict.items(), key=itemgetter(1), reverse = True)
+#def getLocation(DataFrame):
+#    #filters the Day and Place column only
+#    filtered = DataFrame[['Place','Time']].copy()
+#    
+#    #remove rows with Nan in any column
+#    df = filtered.dropna()
+#    return df
+#
+##gets time and activity------------------------------------------------------------------------------#
+#def getActivity(DataFrame):
+#    #filters the Day and Place column only
+#    filtered = DataFrame[['Day','Time', 'Activity']]
+#    
+#    #remove rows with Nam in any column
+#    df = filtered.dropna()
+#    
+#    final = df[(df.Activity != 'walk')]
+#    final = final[(final.Activity != 'lesson')]
+#    final = final[(final.Activity != 'home time')]
+#    final = final[(final.Activity != 'vehicle')]
+#    final = final[(final.Activity != 'groceries')]
+#    final = final[(final.Activity != 'sleep')]
+#    final = final[(final.Activity != 'drinks')]
+#    final = final[(final.Activity != 'religion')]
+#    final = final[(final.Activity != 'exhibition')]
+#    return df
+#
+##this returns a dataframe of location data for one day-------------------------------------------------#
+##   grabs the last index in the file (indicating today's date)
+##   use index to return all the locations from today as Dataframe
+#def getTodayLoc(DataFrame):
+#    
+#    day = int(datetime.strftime(datetime.now(), '%Y%m%d'))
+#    df = DataFrame[DataFrame.Day == day]
+#    df = getLocation(df)
+#    
+#    return df
+#
+#data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/SmarterTimeTimeslots.csv')
+
+import csv   
+fields = ['1']
+
+with open(r'Q1Genuine.csv', 'a') as f:
+    writer = csv.writer(f)
+    writer.write(1)
+
+

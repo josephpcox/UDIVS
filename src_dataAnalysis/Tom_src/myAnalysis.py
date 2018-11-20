@@ -252,33 +252,9 @@ def getOptions(n):
         else: 
             ans = options[3]
         
-        
         return ans,options
-        
-        
 
 data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/SmarterTimeTimeslots.csv')
-
-#-----Week-and-Day-of-data-------------------------#
-#get a weeks worth of data
-#week = data.query('20181016 <= Day <= 20181023')
-
-#new version of filter to one day without hardcoding
-last_index = len(data) - 1
-day = data.loc[last_index, 'Day']
-tomDay_df = data[data.Day == day]
-
-#------------------------------#
-#get location
-# week_loc = week[['Time', 'Place']]
-# 4sorted_week =  week_loc[['Time', 'Place']].to_dict()
-
-#------------------------------------------------------------#
-#get the frequency of apps used for one day
-tomDay_dict = tomDay_df['Activity'].value_counts().to_dict()
-
-#tom's day sorted from greatest to least
-sortedTomDay = sorted(tomDay_dict.items(), key=itemgetter(1), reverse = True)
 
 #-------------------------------------------------------------------------------------------------------------------------#
 questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?', 'How long were you on this app?']
@@ -296,6 +272,8 @@ for n in randomNums:
         count = count+1
     userAns=int(input("input answer here: ")) # Utilize Switch CasegetOptions(n)
     if ans == options[userAns-1]:
-            score = score+1
+        score = score+1
     count = 1
+    
     #print(score)
+    
