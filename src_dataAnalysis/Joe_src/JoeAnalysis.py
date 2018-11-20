@@ -131,6 +131,7 @@ def convertms(ms):
 def getRecentApp():
     ''' This helper function returns the most recent app used for the UDIVS system'''
     for x in somDay_df['Activity'][::-1]:
+        print(x)
         if "phone:" not in x:
             continue
         ans = x
@@ -358,7 +359,7 @@ score = 0
 count = 1
 for n in randomNums:
     ans,options = getOptions(n)
-    print(ans)
+    #print(ans)                        # This is where we normaly print the answer for debugging
     for o in options:
         print(count,". ",o)
         count = count+1

@@ -130,7 +130,7 @@ def convertms(ms):
 # -----------------------------------------------------------------------------------------------------#
 def getRecentApp():
     ''' This helper function returns the most recent app used for the UDIVS system'''
-    for x in tomDay_df['Activity'][::-1]:
+    for x in somDay_df['Activity'][::-1]:
         if "phone:" not in x:
             continue
         ans = x
@@ -143,14 +143,14 @@ def getRecentLocation():
     ''' Returns the most recent app used by the user for the UDIVS system'''
     x=1
     while(True):
-       curLoc = tomDay_df['Place'].iloc[-x]
+       curLoc = somDay_df['Place'].iloc[-x]
        if curLoc == "nan":
            x = x+1
        else:
            break
     #print("curLock:",curLoc)
     
-    locData = tomDay_df['Place'].dropna()
+    locData = somDay_df['Place'].dropna()
     #print(locData)
     ans = ""
     for x in locData[::-1]:
