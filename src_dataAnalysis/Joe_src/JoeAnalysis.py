@@ -294,6 +294,7 @@ def getOptions(n):
         return ans,options
     elif n ==5:
         '''which app did you use most frequently today'''
+        
         print("Which app did you use most frequently today?")
         applicationList = []
         count = 1
@@ -301,7 +302,7 @@ def getOptions(n):
             if "phone:" in x:
                 applicationList.append(x)
         app_df = pd.DataFrame(data = applicationList)
-        applicationDict =app_df[0].value_counts().to_dict()
+        applicationDict = app_df[0].value_counts().to_dict()
         ans = applicationDict.popitem()
         ans = ans[0]
         options.append(ans)

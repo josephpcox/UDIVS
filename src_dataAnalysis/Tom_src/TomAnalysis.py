@@ -291,6 +291,33 @@ def getOptions(n):
             ans = options[3]
         
         return ans,options
+    elif n ==5:
+        
+        '''which app did you use most frequently today'''
+        print("Which app did you use most frequently today?")
+        applicationList = []
+        count = 1
+        for x in somDay_df['Activity']:
+            if "phone:" in x:
+                applicationList.append(x)
+        app_df = pd.DataFrame(data = applicationList)
+        applicationDict = app_df[0].value_counts().to_dict()
+        ans = applicationDict.popitem()
+        ans = ans[0]
+        options.append(ans)
+        for x in somDay_df['Activity']:
+            flag = 0
+            if "phone:" in x:
+                for y in options:
+                    if x == y:
+                        flag = 1
+                if flag == 0:
+                    options.append(x)
+                    count = count +1
+                if count == 4:
+                    break
+        random.shuffle(options,random.random)
+        return ans,options
 
 data = pd.read_csv('../../userdevice_data/Tom_Data/Smarter_time/timeslots.csv')
 
@@ -306,8 +333,9 @@ This is a score fusion with a random question form features chosen from the data
 '''
 #-------------------------------------------------------------------------------------------------------------------------#
 print("Welcome to Tom's Device ! See if you can enter!")
-questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?', 'How long were you on this app?']
-randomNums=random.sample(range(0,5),3)
+questions=['Which app did you use most recently?','What place were you at most recently?','which place were you at around ','Which of these places did you go to yesterday?', 
+           'How long were you on this app?', 'Which app did you use most frequently today?']
+randomNums=random.sample(range(0,6),3)
 print(randomNums)
 # Ask the user if they are genuine or an imposter to collect the data properly
 user = 2
