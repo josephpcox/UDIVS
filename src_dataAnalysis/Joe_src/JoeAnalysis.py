@@ -53,7 +53,7 @@ def getActivity(DataFrame):
 #   use index to return all the locations from today as Dataframe
 def getTodayLoc(DataFrame):
     
-    day = int(datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d'))  #"""FIXME"""
+    day = int(datetime.strftime(datetime.now(), '%Y%m%d'))  #"""FIXME"""
     df = DataFrame[DataFrame.Day == day]
     df = getLocation(df)
     
@@ -64,7 +64,7 @@ def getTodayLoc(DataFrame):
 #   returns all the location from yesterday as a dataframe  
 def getYesterdayLoc(DataFrame):
     
-    day = int(datetime.strftime(datetime.now() - timedelta(2), '%Y%m%d'))# """FIXME"""
+    day = int(datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d'))# """FIXME"""
     print(day)
     df = DataFrame[DataFrame.Day == day]
     df = getLocation(df)
@@ -110,7 +110,7 @@ def getData(DataFrame, Amount):
 # function returns an array of applications used in a day each with a total duration 
 def getDuration(DataFrame):
     
-    day = int(datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d')) #"""FIXME"""
+    day = int(datetime.strftime(datetime.now(), '%Y%m%d')) #"""FIXME"""
     df = data[data.Day == day]
     df = df[['Time', 'Activity', 'Duration ms']].copy()
     df = df.dropna()
