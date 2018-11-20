@@ -3,7 +3,7 @@
 """
 Created on Sat Oct 27 23:11:33 2018
 
-@author: tom
+@author: Joseph, tom
 """
 import pandas as pd
 import matplotlib.pyplot as plt
