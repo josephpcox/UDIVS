@@ -13,6 +13,7 @@ from operator import itemgetter
 from datetime import datetime,timedelta
 import math
 import csv
+import statistic.py
 
 #import numpy as np
 #from sklearn.feature_selection import VarianceThreshold
@@ -409,3 +410,4 @@ Q4_imp = pd.read_csv('../raw_scores/question4_imposter.csv')
 
 Q5_gen = pd.read_csv('../raw_scores/question5_genuine.csv')
 Q5_imp = pd.read_csv('../raw_scores/question5_imposter.csv')
+
