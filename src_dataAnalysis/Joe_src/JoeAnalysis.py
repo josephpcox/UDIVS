@@ -64,7 +64,7 @@ def getTodayLoc(DataFrame):
 #   returns all the location from yesterday as a dataframe  
 def getYesterdayLoc(DataFrame):
     
-    day = int(datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d'))# """FIXME"""
+    day = int(datetime.strftime(datetime.now(), '%Y%m%d'))# """FIXME"""
     #print(day)
     df = DataFrame[DataFrame.Day == day]
     df = getLocation(df)
@@ -306,9 +306,8 @@ def getOptions(n):
             if "phone:" in x:
                 applicationList.append(x)
         app_df = pd.DataFrame(data = applicationList)
-        applicationDict = app_df[0].value_counts().to_dict()
-        ans = applicationDict.popitem()
-        ans = ans[0]
+        ans= app_df[0].value_counts().idxmax()
+    
         options.append(ans)
         for x in day:
             flag = 0

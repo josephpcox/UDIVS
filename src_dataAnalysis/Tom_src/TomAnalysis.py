@@ -305,9 +305,8 @@ def getOptions(n):
             if "phone:" in x:
                 applicationList.append(x)
         app_df = pd.DataFrame(data = applicationList)
-        applicationDict = app_df[0].value_counts().to_dict()
-        ans = applicationDict.popitem()
-        ans = ans[0]
+        ans= app_df[0].value_counts().idxmax()
+       
         options.append(ans)
         for x in day:
             flag = 0
