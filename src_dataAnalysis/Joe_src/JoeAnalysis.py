@@ -65,7 +65,7 @@ def getTodayLoc(DataFrame):
 def getYesterdayLoc(DataFrame):
     
     day = int(datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d'))# """FIXME"""
-    print(day)
+    #print(day)
     df = DataFrame[DataFrame.Day == day]
     df = getLocation(df)
     return df
@@ -130,7 +130,8 @@ def convertms(ms):
 # -----------------------------------------------------------------------------------------------------#
 def getRecentApp():
     ''' This helper function returns the most recent app used for the UDIVS system'''
-    for x in somDay_df['Activity'][::-1]:
+    day = somDay_df['Activity'].dropna()
+    for x in day[::-1]:
         print(x)
         if "phone:" not in x:
             continue
@@ -178,7 +179,8 @@ def getOptions(n):
         count = 1
         print('Which app did you use most recently?\n')
         #this loop gives an array of answers called options for the user to choose from
-        for x in somDay_df['Activity']:
+        day = somDay_df['Activity'].dropna()
+        for x in day:
             flag = 0
             if "phone:" in x:
                 for y in options:
@@ -299,7 +301,8 @@ def getOptions(n):
         print("Which app did you use most frequently today?")
         applicationList = []
         count = 1
-        for x in somDay_df['Activity']:
+        day = somDay_df['Activity'].dropna()
+        for x in day:
             if "phone:" in x:
                 applicationList.append(x)
         app_df = pd.DataFrame(data = applicationList)
@@ -307,7 +310,7 @@ def getOptions(n):
         ans = applicationDict.popitem()
         ans = ans[0]
         options.append(ans)
-        for x in somDay_df['Activity']:
+        for x in day:
             flag = 0
             if "phone:" in x:
                 for y in options:
