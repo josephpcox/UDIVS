@@ -132,7 +132,7 @@ def getRecentApp():
     ''' This helper function returns the most recent app used for the UDIVS system'''
     day = somDay_df['Activity'].dropna()
     for x in day[::-1]:
-        print(x)
+        #print(x)
         if "phone:" not in x:
             continue
         ans = x

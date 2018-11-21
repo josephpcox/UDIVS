@@ -8,14 +8,13 @@ Created on Tue Nov 20 02:24:23 2018
     
 import numpy as np
 import pandas as pd
-import math
 import matplotlib.pyplot as plt
+import math    
+def dprime(mean_gen, mean_imp, std_gen, std_imp,**kwargs):
     
-def dprime(mean_gen, mean_imp, std_gen, std_imp):
-    
-    x = np.sqrt(2) * abs(mean_gen - mean_imp)
-    y = np.sqrt((std_gen**2) + (std_imp**2))
-    return x / y
+    x = math.sqrt(2) * abs(mean_gen - mean_imp)
+    y = math.sqrt((std_gen**2) + (std_imp**2))
+    return (x / y)
 
 def plot_questions(Q_scores, title):
     
@@ -39,11 +38,11 @@ def plot_questions(Q_scores, title):
 def plot_scoreDist(gen_scores, imp_scores, dp):
     
     plt.figure()
-    plt.hist(gen_scores, color='green', lw=2, histtype='step', hatch='//', label='Genuine Scores', range = (0,4), bins = 4)
-    plt.hist(imp_scores, color='red', lw=2, histtype='step', hatch='\\', label='Impostor Scores', range = (0,4), bins = 4)
+    plt.hist(gen_scores, color='green', lw=2, histtype='step', hatch='//', label='Genuine Scores', range = (0,5), bins = 4)
+    plt.hist(imp_scores, color='red', lw=2, histtype='step', hatch='\\', label='Impostor Scores', range = (0,5), bins = 4)
     plt.legend(loc='best')
     #dp = dprime(gen_scores, imp_scores)
-    plt.title('Score Distribution (d-prime= %.10f)' %  dp)
+    plt.title('Score Distribution d-prime=' +  str(dp))
     plt.show()
     return
     
@@ -108,11 +107,11 @@ print(genuine_scores)
 print('NEXT IS IMPOSTER')
 print(imposter_scores)
 
-mu_g = genuine.mean()
-mu_i = imposter.mean()
+mu_g = genuine_scores.mean()
+mu_i = imposter_scores.mean()
 
-sigma_g = np.std(genuine)
-sigma_i = np.std(imposter)
+sigma_g = np.std(genuine_scores)
+sigma_i = np.std(imposter_scores)
 
 dp = dprime(mean_gen = mu_g,mean_imp=mu_i,std_gen=sigma_g,std_imp=sigma_i)
 
