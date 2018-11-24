@@ -118,70 +118,65 @@ dp = dprime(mean_gen = mu_g,mean_imp=mu_i,std_gen=sigma_g,std_imp=sigma_i)
 
 plot_scoreDist(genuine_scores, imposter_scores, dp)
 
-#d_prime =  (math.sqrt(2) * abs(mu_g - mu_i))/math.sqrt((sigma_g ** (2)) + (sigma_i ** (2)))
-#
-#plt.figure()
-#plt.hist(genuine_scores, color='green', alpha = 0.5)
-#plt.hist(imposter_scores, color='red', alpha = 0.5)
-#plt.ylabel('Frequency')
-#plt.xlabel('Matching Score')
-#plt.title('Score Distribution with d\' = ' + str(round(int(d_prime), 2)))
-#plt.xlim([0.0, 1.0])
-#plt.show()
-#
-#thresholds = np.linspace(0.0, 1.0, 7)
-#far = []
-#tpr = []
-#frr = []
-#
-#for t in thresholds:
-#    tp = 0
-#    tn = 0
-#    fp = 0
-#    fn = 0
-#    
-#    for g_s in genuine_scores:
-#        if g_s <= t:
-#            tp += 1
-#        else: 
-#            fn += 1
-#    
-#    for i_s in imposter_scores:
-#        if i_s <= t:
-#            fp += 1
-#        else:
-#            tn += 1
-#            
-#    far.append(fp / (fp + tn))
-#    tpr.append(tp / (tp + fn))
-#    frr.append(fn / (fn + tp))
-#
-#min_distance = abs(frr[1] - far[1])       
-#
-#for (i,j) in zip(frr, far):
-#    distance = abs(i - j)
-#    
-#    if distance < min_distance:
-#        min_distance = distance
-#        x = i
-#        y = j
-#
-#EER = (x + y)/2
-#        
-#plt.figure()
-#plt.plot(far,frr,lw = 1,color = 'blue')
-#plt.xlabel('False Reject Rate')
-#plt.ylabel('False Accept Rate')
-#plt.title('Detection Error Tradeoff with EER = ' + str(round(EER, 3)))
-#plt.show()
-#
-#plt.figure()
-#plt.plot(far, tpr, color='darkorange', lw=1)
-#plt.plot([0, 1], [0, 1], color='navy', lw=1, linestyle='--')
-#plt.xlim([0.0, 1.0])
-#plt.ylim([0.0, 1.05])
-#plt.xlabel('False Positive Rate')
-#plt.ylabel('True Positive Rate')
-#plt.title('Receiver Operating Characteristic')
-#plt.legend(loc="lower right")
-#plt.show()
+# This is for the DET curve
+far = []
+tpr = []
+frr = []
+fpr = []
+err = []
+tp = 0
+tn = 0
+fp = 0
+fn = 0
+thresholds = np.linspace(0.0, 4.0, 100,dtype = 'int')
+for t in thresholds:
+    tp = 0
+    tn = 0
+    fp = 0
+    fn = 0
+    for g_s in genuine_scores:
+        if g_s >= t:
+            tp += 1
+        else: 
+            fn += 1
+    
+    for i_s in imposter_scores:
+        if i_s >= t:
+            fp += 1
+        else:
+            tn += 1
+            
+    far.append(fp / (fp + tn))
+    tpr.append(tp / (tp + fn))
+    frr.append(fn / (fn + tp))
+
+min_distance = abs(frr[1] - far[1])       
+
+for (i,j) in zip(frr, far):
+    distance = abs(i - j)
+    
+    if distance < min_distance:
+        min_distance = distance
+        x = i
+        y = j
+
+EER = (x + y)/2
+        
+plt.figure()
+plt.plot(far,frr,lw = 3,color = 'blue')
+plt.xlabel('False Reject Rate')
+plt.ylabel('False Accept Rate')
+plt.title('Detection Error Tradeoff with EER = ' + str(round(EER, 3)))
+plt.show()
+
+
+plt.figure()
+plt.plot(far, tpr, color='darkorange', lw=1)
+plt.plot([0, 1], [0, 1], color='navy', lw=1, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic')
+plt.legend(loc="lower right")
+plt.show()
