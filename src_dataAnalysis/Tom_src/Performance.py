@@ -46,7 +46,27 @@ def plot_scoreDist(gen_scores, imp_scores, dp):
     plt.title('Score Distribution d-prime=' +  str(dp))
     plt.show()
     return
-    
+
+def Calculate_Efficency(Q_gen,Q_imp):
+    gen_num_correct = 0
+    gen_num_incorrect = 0
+    imp_num_correct = 0
+    imp_num_incorrect = 0
+    total = 0
+    for g in Q_gen:
+        if g ==1:
+            gen_num_correct = gen_num_correct + 1
+        else:
+            gen_num_incorrect = gen_num_incorrect + 1
+        total = total + 1
+    for i in Q_imp:
+        if i == 1:
+            imp_num_correct = imp_num_correct + 1
+        else:
+            imp_num_incorrect = imp_num_incorrect + 1
+        total = total + 1
+    return ((gen_num_correct+imp_num_incorrect)-(gen_num_incorrect+ imp_num_correct)/total)
+
 genuine = pd.read_csv('../raw_scores/survey_score_genuine.csv')
 imposter = pd.read_csv('../raw_scores/survey_score_imposter.csv')
 
@@ -68,36 +88,61 @@ Q5_imp = pd.read_csv('../raw_scores/question5_imposter.csv')
 Q6_gen = pd.read_csv('../raw_scores/question6_genuine.csv')
 Q6_imp = pd.read_csv('../raw_scores/question6_imposter.csv')
 
+e =[]
+# Question 1 Graphs and Eff----------------------------------------------------#
+q_g = Q1_gen.values
+plot_questions(q_g[:,0], "Question 1 Genuine Scores")
+q_i = Q1_imp.values
+plot_questions(q_i[:,0], "Question 1 Imposter Scores")
+e.append(Calculate_Efficency(q_g,q_i))
 
-q = Q1_gen.values
-plot_questions(q[:,0], "Question 1 Genuine Scores")
-q = Q1_imp.values
-plot_questions(q[:,0], "Question 1 Imposter Scores")
+# Question 2 Graphs and Eff----------------------------------------------------#
+q_g = Q2_gen.values
+plot_questions(q_g[:,0], "Question 2 Genuine Scores")
+q_i = Q2_imp.values
+plot_questions(q_i[:,0], "Question 2 Imposter Scores")
+e.append(Calculate_Efficency(q_g,q_i))
 
-q = Q2_gen.values
-plot_questions(q[:,0], "Question 2 Genuine Scores")
-q = Q2_imp.values
-plot_questions(q[:,0], "Question 2 Imposter Scores")
+# Question 3 Graphs and Eff----------------------------------------------------#
+q_g = Q3_gen.values
+plot_questions(q_g[:,0], "Question 3 Genuine Scores")
+q_i = Q3_imp.values
+plot_questions(q_i[:,0], "Question 3 Imposter Scores")
+e.append(Calculate_Efficency(q_g,q_i))
 
-q = Q3_gen.values
-plot_questions(q[:,0], "Question 3 Genuine Scores")
-q = Q3_imp.values
-plot_questions(q[:,0], "Question 3 Imposter Scores")
+# Question 4 Graphs and Eff----------------------------------------------------#
+q_g = Q4_gen.values
+plot_questions(q_g[:,0], "Question 4 Genuine Scores")
+q_i = Q4_imp.values
+plot_questions(q_i[:,0], "Question 4 Imposter Scores")
+e.append(Calculate_Efficency(q_g,q_i))
 
-q = Q4_gen.values
-plot_questions(q[:,0], "Question 4 Genuine Scores")
-q = Q4_imp.values
-plot_questions(q[:,0], "Question 4 Imposter Scores")
+# Question 5 Graphs and Eff----------------------------------------------------#
+q_g = Q5_gen.values
+plot_questions(q_g[:,0], "Question 5 Genuine Scores")
+q_i = Q5_imp.values
+plot_questions(q_i[:,0], "Question 5 Imposter Scores")
+e.append(Calculate_Efficency(q_g,q_i))
 
-q = Q5_gen.values
-plot_questions(q[:,0], "Question 5 Genuine Scores")
-q = Q5_imp.values
-plot_questions(q[:,0], "Question 5 Imposter Scores")
+# Question 6 Graphs and Eff----------------------------------------------------#
+q_g = Q6_gen.values
+plot_questions(q_g[:,0], "Question 6 Genuine Scores")
+q_i = Q6_imp.values
+plot_questions(q_i[:,0], "Question 6 Imposter Scores")
+e.append(Calculate_Efficency(q_g,q_i))
 
-q = Q6_gen.values
-plot_questions(q[:,0], "Question 6 Genuine Scores")
-q = Q6_imp.values
-plot_questions(q[:,0], "Question 6 Imposter Scores")
+# polt all the effiecy rates
+objects = ('Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6')
+y_pos = np.arange(len(objects))
+performance = e
+ 
+plt.bar(y_pos, performance, align='center', alpha=0.5)
+plt.xticks(y_pos, objects)
+plt.ylabel('Efficecy Percent')
+plt.title('Question Efficency')
+plt.show()
+
+
 
 #scores = genuine[0]
 genuine_scores = genuine.values
