@@ -140,8 +140,8 @@ performance = e
 plt.bar(y_pos, performance, align='center', alpha=0.5)
 plt.xticks(y_pos, objects)
 plt.xlabel('Question Number')
-plt.ylabel('Acurracy Percent')
-plt.title('Question Acurracy')
+plt.ylabel('Accuracy Percent')
+plt.title('Question Accuracy')
 plt.show()
 
 
