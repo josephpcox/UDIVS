@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import math    
+
 def dprime(mean_gen, mean_imp, std_gen, std_imp,**kwargs):
     
     x = math.sqrt(2) * abs(mean_gen - mean_imp)
@@ -43,7 +44,7 @@ def plot_scoreDist(gen_scores, imp_scores, dp):
     plt.hist(imp_scores, color='red', lw=2, histtype='step', hatch='\\', label='Impostor Scores', range = (0,5), bins = 4)
     plt.legend(loc='best')
     #dp = dprime(gen_scores, imp_scores)
-    plt.title('Score Distribution d-prime=' +  str(dp))
+    plt.title('Score Distribution d-prime=' +  str(round(dp, 3)))
     plt.show()
     return
 
@@ -138,8 +139,9 @@ performance = e
  
 plt.bar(y_pos, performance, align='center', alpha=0.5)
 plt.xticks(y_pos, objects)
-plt.ylabel('Efficecy Percent')
-plt.title('Question Efficency')
+plt.xlabel('Question Number')
+plt.ylabel('Acurracy Percent')
+plt.title('Question Acurracy')
 plt.show()
 
 
@@ -209,8 +211,9 @@ EER = (x + y)/2
         
 plt.figure()
 plt.plot(far,frr,lw = 3,color = 'blue')
-plt.xlabel('False Reject Rate')
-plt.ylabel('False Accept Rate')
+plt.plot([0,1], [0,1], lw = 1, color = 'black', linestyle = '--')
+plt.xlabel('False Accept Rate')
+plt.ylabel('False Reject Rate')
 plt.title('Detection Error Tradeoff with EER = ' + str(round(EER, 3)))
 plt.show()
 
