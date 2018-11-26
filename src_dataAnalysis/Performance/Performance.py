@@ -44,7 +44,7 @@ def plot_scoreDist(gen_scores, imp_scores, dp):
     plt.hist(imp_scores, color='red', lw=2, histtype='step', hatch='\\', label='Impostor Scores', range = (0,5), bins = 4)
     plt.legend(loc='best')
     #dp = dprime(gen_scores, imp_scores)
-    plt.title('Score Distribution d-prime=' +  str(round(dp, 3)))
+    plt.title('Score Distribution d-prime=' +  str(round(dp, 2)))
     plt.show()
     return
 
