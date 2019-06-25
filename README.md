@@ -11,12 +11,12 @@ Once you have the other branches you can run *git branch* and it should show you
 3. Latex_Src
 4. master 
 
-###Git Checkout 
+### Git Checkout 
 To switch to the branch you need to work on by simply running *git checkout <branch name>* without the angle brackets. this will switch your branch to the one you specified in <branch name>
 
 ---
 
-#Utilizing *requirements.txt*
+# Utilizing *requirements.txt*
 
 Instead of pushing the virtual environment to the reapo we will just save our environments settings inside a requirements.txt file. Once you have your virtual envirnment set up outside of your local git repo
 use : *pip install -r requirements.txt* inside your activated virtual environment. It will automatically update your dependincies. If you make any changes to your local environment use pip *freez>requirements.txt* it will overwrite the requirements.txt file with all the python libraries that you have installed in your virtual environment including the ones that you recently added. This will save space and time on your commits and pulls from the repo.
